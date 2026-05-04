@@ -29,7 +29,7 @@
       ['tables', 'collections', 'views', 'matviews', 'procedures', 'functions'].map(objectTypeField =>
         _.sortBy(
           ((db || {})[objectTypeField] || []).map(obj => ({
-            text: obj.pureName,
+            text: obj.schemaName ? `${obj.schemaName}.${obj.pureName}` : obj.pureName,
             onClick: () => handleDatabaseObjectClick({ objectTypeField, ...dbConnectionInfo, ...obj }),
             icon: databaseObjectIcons[objectTypeField],
           })),
@@ -43,11 +43,11 @@
       if (connection.singleDatabase) continue;
       if (getCurrentConfig()?.singleDbConnection) continue;
       const databases = getLocalStorage(`database_list_${conid}`) || [];
-      
+
       const driver = findEngineDriver(connection, $extensions);
       const driverIcon = getDriverIcon(driver, currentThemeType);
       const connectionIcon = driverIcon || 'img database';
-      
+
       for (const db of databases) {
         databaseList.push({
           text: `${db.name} on ${getConnectionLabel(connection)}`,
@@ -190,7 +190,8 @@
           domInput.focus();
         }}
       >
-        <FontIcon icon="icon menu" /> {_t('commandPalette.commands', { defaultMessage: 'Commands' })}
+        <FontIcon icon="icon menu" />
+        {_t('commandPalette.commands', { defaultMessage: 'Commands' })}
       </div>
       <div
         class="page"
@@ -200,7 +201,8 @@
           domInput.focus();
         }}
       >
-        <FontIcon icon="icon database" /> {_t('common.database', { defaultMessage: 'Database' })}
+        <FontIcon icon="icon database" />
+        {_t('common.database', { defaultMessage: 'Database' })}
       </div>
     </div>
     <div class="mainInner">
@@ -211,7 +213,9 @@
           bind:value={filter}
           on:keydown={handleKeyDown}
           placeholder={_tval(parentCommand?.text) ||
-            ($visibleCommandPalette == 'database' ? _t('commandPalette.searchInDatabase', { defaultMessage: 'Search in database' }) : _t('commandPalette.searchInCommands', { defaultMessage: 'Search in commands' }))}
+            ($visibleCommandPalette == 'database'
+              ? _t('commandPalette.searchInDatabase', { defaultMessage: 'Search in database' })
+              : _t('commandPalette.searchInCommands', { defaultMessage: 'Search in commands' }))}
         />
       </div>
       <div class="content">
@@ -360,7 +364,9 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    transition: color 150ms ease-in-out, border-color 150ms ease-in-out;
+    transition:
+      color 150ms ease-in-out,
+      border-color 150ms ease-in-out;
   }
 
   .page:hover {

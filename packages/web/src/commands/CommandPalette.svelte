@@ -35,8 +35,7 @@
       ['tables', 'collections', 'views', 'matviews', 'procedures', 'functions'].map(objectTypeField =>
         _.sortBy(
           ((db || {})[objectTypeField] || []).map(obj => ({
-            text:
-              obj.schemaName && pureNameCounts[obj.pureName] > 1 ? `${obj.schemaName}.${obj.pureName}` : obj.pureName,
+            text: pureNameCounts[obj.pureName] > 1 ? fullNameToLabel(obj) : obj.pureName,
             onClick: () => handleDatabaseObjectClick({ objectTypeField, ...dbConnectionInfo, ...obj }),
             icon: databaseObjectIcons[objectTypeField],
           })),
@@ -73,7 +72,7 @@
 </script>
 
 <script>
-  import { filterName, getConnectionLabel, findEngineDriver } from 'dbgate-tools';
+  import { filterName, getConnectionLabel, findEngineDriver, fullNameToLabel } from 'dbgate-tools';
 
   import _ from 'lodash';
   import { onMount } from 'svelte';

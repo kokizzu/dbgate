@@ -25,11 +25,18 @@
   });
 
   function extractDbItems(db, dbConnectionInfo, connectionList, $extensions, currentThemeType) {
+    const allObjects = _.flatten(
+      ['tables', 'collections', 'views', 'matviews', 'procedures', 'functions'].map(objectTypeField =>
+        ((db || {})[objectTypeField] || []).map(obj => ({ objectTypeField, obj }))
+      )
+    );
+    const pureNameCounts = _.countBy(allObjects, ({ obj }) => obj.pureName);
     const objectList = _.flatten(
       ['tables', 'collections', 'views', 'matviews', 'procedures', 'functions'].map(objectTypeField =>
         _.sortBy(
           ((db || {})[objectTypeField] || []).map(obj => ({
-            text: obj.schemaName ? `${obj.schemaName}.${obj.pureName}` : obj.pureName,
+            text:
+              obj.schemaName && pureNameCounts[obj.pureName] > 1 ? `${obj.schemaName}.${obj.pureName}` : obj.pureName,
             onClick: () => handleDatabaseObjectClick({ objectTypeField, ...dbConnectionInfo, ...obj }),
             icon: databaseObjectIcons[objectTypeField],
           })),

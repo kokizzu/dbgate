@@ -87,7 +87,11 @@
   }
 
   function isValidGeometry(geometry): boolean {
-    if (!geometry || !Array.isArray(geometry.coordinates)) return false;
+    if (!geometry) return false;
+    if (geometry.type === 'GeometryCollection') {
+      return Array.isArray(geometry.geometries) && geometry.geometries.length > 0 && geometry.geometries.every(isValidGeometry);
+    }
+    if (!Array.isArray(geometry.coordinates)) return false;
     return isValidCoordinates(geometry.coordinates);
   }
 

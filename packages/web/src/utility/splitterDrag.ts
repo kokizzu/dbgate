@@ -1,10 +1,14 @@
 export default function splitterDrag(node, axes) {
   let resizeStart = null;
+  let prevCursor = null;
+  let prevUserSelect = null;
 
   const handleResizeDown = e => {
     if (e.button !== 0) return;
     e.preventDefault();
     resizeStart = e[axes];
+    prevCursor = document.body.style.cursor;
+    prevUserSelect = document.body.style.userSelect;
     document.addEventListener('mousemove', handleResizeMove, true);
     document.addEventListener('mouseup', handleResizeEnd, true);
     document.body.style.cursor = axes === 'clientX' ? 'col-resize' : 'row-resize';
@@ -21,13 +25,20 @@ export default function splitterDrag(node, axes) {
       })
     );
   };
+
+  const restoreStyles = () => {
+    document.body.style.cursor = prevCursor;
+    document.body.style.userSelect = prevUserSelect;
+    prevCursor = null;
+    prevUserSelect = null;
+  };
+
   const handleResizeEnd = e => {
     e.preventDefault();
     resizeStart = null;
     document.removeEventListener('mousemove', handleResizeMove, true);
     document.removeEventListener('mouseup', handleResizeEnd, true);
-    document.body.style.cursor = '';
-    document.body.style.userSelect = '';
+    restoreStyles();
   };
 
   node.addEventListener('mousedown', handleResizeDown);
@@ -38,8 +49,7 @@ export default function splitterDrag(node, axes) {
       if (resizeStart != null) {
         document.removeEventListener('mousemove', handleResizeMove, true);
         document.removeEventListener('mouseup', handleResizeEnd, true);
-        document.body.style.cursor = '';
-        document.body.style.userSelect = '';
+        restoreStyles();
       }
     },
   };

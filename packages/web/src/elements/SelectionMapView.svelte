@@ -75,7 +75,7 @@
   }
 
   function isValidPosition(pos: any[]): boolean {
-    return Array.isArray(pos) && pos.length >= 2 && pos.every(c => typeof c === 'number' && !isNaN(c));
+    return Array.isArray(pos) && pos.length >= 2 && pos.every(c => typeof c === 'number' && Number.isFinite(c));
   }
 
   function isValidCoordinates(coords: any): boolean {

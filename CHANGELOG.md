@@ -9,6 +9,12 @@ Builds:
 - linux - application for linux
 - win - application for Windows
 
+## 7.1.11
+
+- CHANGED: AI Gateway migrated; endpoints now on new infrastructure, improving availability
+- CHANGED: Auth proxy migrated; endpoints now on new infrastructure, improving licenses availability
+- ADDED: Option to preserve logs #1446
+
 ## 7.1.10
 
 - CHANGED: Private DbGate cloud migrated; endpoints now on new infrastructure, improving availability

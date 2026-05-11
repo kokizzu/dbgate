@@ -12,9 +12,9 @@ Builds:
 ## 7.1.11
 
 - CHANGED: AI Gateway migrated; endpoints now on new infrastructure, improving availability
-- CHANGED: Auth proxy migrated; endpoints now on new infrastructure, improving licenses availability
+- CHANGED: Auth proxy migrated; endpoints now on new infrastructure, improving trial and licence availability
 - ADDED: Option to preserve logs #1446
-- CHANGED: Enhance loading state handling in database connections and SQL object list components
+- CHANGED: Improved loading state handling for database connections and SQL object list components
 
 ## 7.1.10
 

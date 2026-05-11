@@ -60,8 +60,9 @@
       if (bounds.isValid()) {
         map.fitBounds(bounds);
       }
-    } catch (_e) {
+    } catch (e) {
       // bounds not valid (e.g. all-NaN coordinates), leave the default map view
+      console.warn('Failed to fit map bounds from GeoJSON; leaving the default map view.', e);
     }
     layers.push(geoJsonObj);
   }

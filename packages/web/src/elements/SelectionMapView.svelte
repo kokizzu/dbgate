@@ -74,11 +74,21 @@
     return false;
   }
 
+  function isValidPosition(pos: any[]): boolean {
+    return Array.isArray(pos) && pos.length >= 2 && pos.every(c => typeof c === 'number' && !isNaN(c));
+  }
+
+  function isValidCoordinates(coords: any): boolean {
+    if (!Array.isArray(coords) || coords.length === 0) return false;
+    // Leaf level: array of numbers — a single position
+    if (typeof coords[0] === 'number') return isValidPosition(coords);
+    // Nested level: recurse into each element
+    return coords.every(isValidCoordinates);
+  }
+
   function isValidGeometry(geometry): boolean {
-    if (!geometry || !geometry.coordinates) return false;
-    const coords = geometry.coordinates;
-    const flatCoords = coords.flat(Infinity);
-    return flatCoords.every((c: any) => typeof c === 'number' && !isNaN(c));
+    if (!geometry || !Array.isArray(geometry.coordinates)) return false;
+    return isValidCoordinates(geometry.coordinates);
   }
 
   function createColumnsTable(cells) {

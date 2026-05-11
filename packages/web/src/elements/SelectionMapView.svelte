@@ -2,14 +2,7 @@
   import _ from 'lodash';
   import { isWktGeometry, stringifyCellValue } from 'dbgate-tools';
   import wellknown from 'wellknown';
-  const LAT_PRIORITY_PATTERNS = [
-    /^lat$/i,
-    /^latitude$/i,
-    /latitude$/i,
-    /lat$/i,
-    /latitude/i,
-    /lat/i,
-  ];
+  const LAT_PRIORITY_PATTERNS = [/^lat$/i, /^latitude$/i, /latitude$/i, /lat$/i, /latitude/i, /lat/i];
 
   const LON_PRIORITY_PATTERNS = [
     /^lon$/i,
@@ -81,6 +74,13 @@
     return false;
   }
 
+  function isValidGeometry(geometry): boolean {
+    if (!geometry || !geometry.coordinates) return false;
+    const coords = geometry.coordinates;
+    const flatCoords = coords.flat(Infinity);
+    return flatCoords.every((c: any) => typeof c === 'number' && !isNaN(c));
+  }
+
   function createColumnsTable(cells) {
     if (cells.length == 0) return '';
     return `<table>${cells
@@ -121,13 +121,16 @@
       if (geoValues.length > 0) {
         // parse WKT to geoJSON array
         features.push(
-          ...geoValues.map(wellknown).map(geometry => ({
-            type: 'Feature',
-            properties: {
-              popupContent: createColumnsTable(cells.filter(x => !isWktGeometry(x.value))),
-            },
-            geometry,
-          }))
+          ...geoValues
+            .map(wellknown)
+            .filter(geometry => geometry != null && isValidGeometry(geometry))
+            .map(geometry => ({
+              type: 'Feature',
+              properties: {
+                popupContent: createColumnsTable(cells.filter(x => !isWktGeometry(x.value))),
+              },
+              geometry,
+            }))
         );
       }
     }

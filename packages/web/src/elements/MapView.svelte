@@ -55,7 +55,14 @@
       })
       .addTo(map);
     // geoJsonObj.bindPopup('This is the Transamerica Pyramid'); //.openPopup();
-    map.fitBounds(geoJsonObj.getBounds());
+    try {
+      const bounds = geoJsonObj.getBounds();
+      if (bounds.isValid()) {
+        map.fitBounds(bounds);
+      }
+    } catch (_e) {
+      // bounds not valid (e.g. all-NaN coordinates), leave the default map view
+    }
     layers.push(geoJsonObj);
   }
 

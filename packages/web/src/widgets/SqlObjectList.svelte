@@ -371,6 +371,8 @@
           list={objectList
             .filter(x => x.schemaName == null || ($appliedCurrentSchema ? x.schemaName == $appliedCurrentSchema : true))
             .map(x => ({ ...x, conid, database }))}
+          initialRenderCount={200}
+          renderBatchSize={200}
           module={databaseObjectAppObject}
           groupFunc={getAppObjectGroup}
           subItemsComponent={(data, { isExpandedBySearch }) =>
